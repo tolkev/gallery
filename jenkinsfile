@@ -29,6 +29,14 @@ pipeline {
                    '''
             }
         }
+
+        stage('carry out tests') {
+            steps {
+                sh '''
+                   npm test
+                   '''
+            }
+        }
         stage('Deploy') {
             steps {
                 sh 'curl -X POST https://api.render.com/deploy/srv-cgcuam4eoogljtrc8ulg?key=IK-sy1WdwI8ref=$COMMIT'
