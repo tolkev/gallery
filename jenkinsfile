@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    
+    tools {nodejs "node"}
+    
+    stages {
+        stage('Start') {
+            steps {
+                echo 'Build is starting'
+            }
+        }
+        stage('Clone github repository') {
+            steps {
+                git url: 'https://github.com/tolkev/gallery1.git', branch: 'main'
+            }
+        }
+        stage('Get latest commit') {
+            steps {
+                sh '''
+                   export COMMIT=$(git log --oneline | awk '{print $1}' | head -n 1)
+                   echo $COMMIT
+                   '''
+            }
+        }
+        stage('Install dependencies') {
+            steps {
+                sh '''
+                   npm install
+                   '''
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'curl -X POST https://api.render.com/deploy/srv-cgcuam4eoogljtrc8ulg?key=IK-sy1WdwI8ref=$COMMIT'
+            }
+        }
+        stage('End') {
+            steps {
+                echo 'Build is finished'
+            }
+        }
+    }
+}
